@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../models/category.dart';
 import '../widgets/category_card.dart';
+import 'favorites_screen.dart';
 import 'meals_screen.dart';
 import 'meal_detail_screen.dart';
 import '../models/meal_detail.dart';
@@ -47,6 +48,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               'Рандом рецепт',
               style: TextStyle(color: Colors.black),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+              );
+            },
+          ),
+          TextButton.icon(
+            onPressed: _openRandom,
+            icon: const Icon(Icons.shuffle, color: Colors.black),
+            label: const Text('Рандом рецепт', style: TextStyle(color: Colors.black)),
           ),
 
         ],

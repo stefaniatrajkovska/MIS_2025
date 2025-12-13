@@ -1,40 +1,64 @@
+import '../services/favorites_service.dart';
 import 'package:flutter/material.dart';
-import '../models/meal_summary.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class MealCard extends StatelessWidget {
+import '../models/meal_summary.dart';
+import '../services/favorites_service.dart';
+
+class MealCard extends StatefulWidget {
   final MealSummary meal;
   const MealCard({super.key, required this.meal});
 
   @override
+  State<MealCard> createState() => _MealCardState();
+}
+
+class _MealCardState extends State<MealCard> {
+  @override
   Widget build(BuildContext context) {
+    final isFav = FavoritesService.isFavorite(widget.meal.idMeal);
+
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-              child: CachedNetworkImage(
-                imageUrl: meal.strMealThumb,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                placeholder: (c, s) => const Center(child: CircularProgressIndicator()),
-                errorWidget: (c, s, e) => const Center(child: Icon(Icons.image_not_supported)),
-              ),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: CachedNetworkImage(
+                    imageUrl: widget.meal.strMealThumb,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 6,
+                  right: 6,
+                  child: IconButton(
+                    icon: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        FavoritesService.toggleFavorite(widget.meal);
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              meal.strMeal,
+              widget.meal.strMeal,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 6),
         ],
       ),
     );
